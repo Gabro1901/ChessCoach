@@ -22,7 +22,6 @@ import {
   RotateCcw,
   Brain,
   ChevronLast,
-  FolderOpen,
 } from 'lucide-react';
 import { sounds } from './engine/soundService';
 
@@ -51,6 +50,7 @@ export const App: React.FC = () => {
     undoMove,
     requestHint,
     revealHintMove,
+    clearHint,
     newGame,
     setPlayerColor,
     setCurrentLevel,
@@ -191,15 +191,15 @@ export const App: React.FC = () => {
       />
 
       {/* MAIN CONTAINER */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-1.5 py-1 sm:p-3 lg:p-4 flex flex-col md:flex-row gap-2.5 lg:gap-6 justify-center items-center h-[calc(100dvh-50px)] overflow-hidden">
+      <main className="flex-1 max-w-[1560px] w-full mx-auto px-2 sm:px-6 lg:px-8 py-2 md:py-3 flex flex-col md:flex-row gap-4 lg:gap-8 justify-center items-center h-[calc(100dvh-52px)] overflow-hidden">
         {/* ================= LEFT / CENTER: CHESS ARENA ================= */}
         <div className="flex items-center justify-center h-full min-h-0 w-full md:w-auto shrink-0">
           
           {/* Main Arena Unit: Full width on mobile, calibrated on desktop */}
           <div className={`flex flex-col items-center w-full max-w-md sm:max-w-lg md:max-w-none ${
             showEvalBar
-              ? "md:w-[calc(min(620px,calc(100dvh-180px))+34px)] lg:w-[calc(min(700px,calc(100dvh-170px))+34px)]"
-              : "md:w-[min(620px,calc(100dvh-180px))] lg:w-[min(700px,calc(100dvh-170px))]"
+              ? "md:w-[calc(min(640px,calc(100dvh-165px))+34px)] lg:w-[calc(min(720px,calc(100dvh-155px))+34px)] xl:w-[calc(min(760px,calc(100dvh-145px))+34px)]"
+              : "md:w-[min(640px,calc(100dvh-165px))] lg:w-[min(720px,calc(100dvh-155px))] xl:w-[min(760px,calc(100dvh-145px))]"
           }`}>
             
             {/* Top Info Bar: Opponent Info & Captured Pieces */}
@@ -279,7 +279,7 @@ export const App: React.FC = () => {
             <div className="w-full flex items-center justify-center gap-1.5 sm:gap-2.5">
               {/* 1. Eval Bar */}
               {showEvalBar && (
-                <div className="w-3.5 sm:w-5 md:w-6 h-[min(calc(100vw-36px),calc(100dvh-185px))] md:h-[min(620px,calc(100dvh-180px))] lg:h-[min(700px,calc(100dvh-170px))] shrink-0">
+                <div className="w-3.5 sm:w-5 md:w-6 h-[min(calc(100vw-36px),calc(100dvh-185px))] md:h-[min(640px,calc(100dvh-165px))] lg:h-[min(720px,calc(100dvh-155px))] xl:h-[min(760px,calc(100dvh-145px))] shrink-0">
                   <EvalBar
                     score={positionAnalysis ? positionAnalysis.score : 0}
                     mate={positionAnalysis ? positionAnalysis.mate : null}
@@ -290,7 +290,7 @@ export const App: React.FC = () => {
               )}
 
               {/* 2. Chessboard (Exact width and height) */}
-              <div className="w-[min(calc(100vw-36px),calc(100dvh-185px))] md:w-[min(620px,calc(100dvh-180px))] lg:w-[min(700px,calc(100dvh-170px))] aspect-square shrink-0">
+              <div className="w-[min(calc(100vw-36px),calc(100dvh-185px))] md:w-[min(640px,calc(100dvh-165px))] lg:w-[min(720px,calc(100dvh-155px))] xl:w-[min(760px,calc(100dvh-145px))] aspect-square shrink-0">
                 <ChessBoard
                   game={displayGame}
                   orientation={orientation}
@@ -328,18 +328,9 @@ export const App: React.FC = () => {
                 {/* Quick Desktop Quick Actions */}
                 <div className="hidden sm:flex items-center gap-1">
                   <button
-                    onClick={() => setIsSavedModalOpen(true)}
-                    className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold transition-colors border border-slate-700/60"
-                    title="Partite Salvate & Revisione"
-                  >
-                    <FolderOpen className="w-3 h-3 text-amber-400" />
-                    <span>Partite</span>
-                  </button>
-
-                  <button
                     onClick={handleUndoMove}
                     disabled={history.length === 0}
-                    className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold disabled:opacity-40 transition-colors border border-slate-700/60"
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold disabled:opacity-40 transition-colors border border-slate-700/60"
                     title="Annulla mossa (Ctrl+Z)"
                   >
                     <Undo2 className="w-3 h-3 text-amber-400" />
@@ -412,7 +403,7 @@ export const App: React.FC = () => {
         </div>
 
         {/* ================= RIGHT COLUMN: DESKTOP TABBED WORKSPACE ================= */}
-        <div className="hidden md:flex flex-col w-80 lg:w-[380px] xl:w-[420px] shrink-0 h-full overflow-hidden bg-[#141a24] border border-slate-800 rounded-3xl p-4 shadow-xl">
+        <div className="hidden md:flex flex-col w-full md:w-[380px] lg:w-[440px] xl:w-[480px] 2xl:w-[520px] shrink-0 h-[min(calc(100dvh-165px)+74px,834px)] max-h-[calc(100dvh-60px)] overflow-hidden bg-[#141a24] border border-slate-800/90 rounded-3xl p-4 shadow-xl">
           {/* Desktop Tabs Header */}
           <div className="grid grid-cols-3 gap-1.5 p-1 bg-[#1c2433] rounded-2xl mb-4 border border-slate-800/80 shrink-0">
             <button
@@ -453,7 +444,7 @@ export const App: React.FC = () => {
           </div>
 
           {/* Desktop Tab Content */}
-          <div className="flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-700">
+          <div className="flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-700 flex flex-col">
             {desktopTab === 'coach' && (
               <CoachPanel
                 currentLevel={currentLevel}
@@ -462,6 +453,7 @@ export const App: React.FC = () => {
                 positionAnalysis={positionAnalysis}
                 onRequestHint={requestHint}
                 onRevealHintMove={revealHintMove}
+                onDismissHint={clearHint}
                 isHintRevealed={isHintRevealed}
                 isEngineThinking={isEngineThinking}
                 isPlayerTurn={isPlayerTurn}
@@ -470,7 +462,7 @@ export const App: React.FC = () => {
             )}
 
             {desktopTab === 'history' && (
-              <div className="space-y-4">
+              <div className="h-full flex flex-col">
                 <MoveHistory
                   history={history}
                   moveEvaluations={moveEvaluations}
@@ -478,8 +470,6 @@ export const App: React.FC = () => {
                   onSelectMove={handleSelectMove}
                   onCopyPgn={copyPgn}
                   onCopyFen={copyFen}
-                  onOpenSaved={() => setIsSavedModalOpen(true)}
-                  onOpenImport={() => setIsImportModalOpen(true)}
                 />
               </div>
             )}
@@ -599,14 +589,6 @@ export const App: React.FC = () => {
           }}
           onCopyPgn={copyPgn}
           onCopyFen={copyFen}
-          onOpenSaved={() => {
-            setMobileModal(null);
-            setIsSavedModalOpen(true);
-          }}
-          onOpenImport={() => {
-            setMobileModal(null);
-            setIsImportModalOpen(true);
-          }}
         />
       </SlideSheet>
 

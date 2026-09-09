@@ -6,8 +6,6 @@ import {
   ChevronLast,
   ChevronLeft,
   ChevronRight,
-  FolderOpen,
-  Upload,
 } from 'lucide-react';
 import { MoveEvaluation } from '../../types/chess';
 import { MOVE_QUALITY_MAP } from '../../engine/explanationEngine';
@@ -19,8 +17,6 @@ interface MoveHistoryProps {
   onSelectMove: (index: number) => void;
   onCopyPgn?: () => Promise<boolean>;
   onCopyFen?: () => Promise<boolean>;
-  onOpenSaved?: () => void;
-  onOpenImport?: () => void;
 }
 
 export const MoveHistory: React.FC<MoveHistoryProps> = ({
@@ -30,8 +26,6 @@ export const MoveHistory: React.FC<MoveHistoryProps> = ({
   onSelectMove,
   onCopyPgn,
   onCopyFen,
-  onOpenSaved,
-  onOpenImport,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [copiedPgn, setCopiedPgn] = useState(false);
@@ -115,7 +109,7 @@ export const MoveHistory: React.FC<MoveHistoryProps> = ({
       {/* Move list */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto p-2 space-y-0.5 font-mono text-xs min-h-[160px] max-h-[220px] md:max-h-[280px] scrollbar-thin scrollbar-thumb-slate-700"
+        className="flex-1 overflow-y-auto p-2 space-y-0.5 font-mono text-xs min-h-[200px] scrollbar-thin scrollbar-thumb-slate-700"
       >
         {pairs.length === 0 ? (
           <div className="p-4 text-center text-slate-500 text-xs italic font-sans">
@@ -175,7 +169,7 @@ export const MoveHistory: React.FC<MoveHistoryProps> = ({
         )}
       </div>
 
-      {/* Navigation Buttons & Action Triggers (QoL Feature) */}
+      {/* Navigation Buttons (QoL Feature) */}
       <div className="flex items-center justify-between px-3 py-2 bg-[#1c2433] border-t border-slate-700/80">
         <div className="flex items-center gap-1">
           <button
@@ -221,27 +215,15 @@ export const MoveHistory: React.FC<MoveHistoryProps> = ({
           </button>
         </div>
 
-        <div className="flex items-center gap-1">
-          {onOpenSaved && (
-            <button
-              onClick={onOpenSaved}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold border border-slate-700/80 transition-colors"
-              title="Apri partite salvate"
-            >
-              <FolderOpen className="w-3 h-3 text-amber-400" />
-              <span>Salvate</span>
-            </button>
-          )}
-
-          {onOpenImport && (
-            <button
-              onClick={onOpenImport}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold border border-slate-700/80 transition-colors"
-              title="Importa PGN/FEN"
-            >
-              <Upload className="w-3 h-3 text-blue-400" />
-              <span>Importa</span>
-            </button>
+        <div className="text-[11px] font-mono text-slate-400">
+          {history.length > 0 ? (
+            <span>
+              {currentMoveIndex === -2
+                ? 'Posizione iniziale'
+                : `Mossa ${currentMoveIndex >= 0 ? currentMoveIndex + 1 : history.length}/${history.length}`}
+            </span>
+          ) : (
+            <span>0 mosse</span>
           )}
         </div>
       </div>

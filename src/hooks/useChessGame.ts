@@ -377,6 +377,13 @@ export function useChessGame() {
     ]);
   }, [hintData]);
 
+  // Clear / Dismiss Active Hint
+  const clearHint = useCallback(() => {
+    setHintData(null);
+    setIsHintRevealed(false);
+    setArrows([]);
+  }, []);
+
   // New Game
   const newGame = useCallback(() => {
     isBotRunningRef.current = false;
@@ -779,6 +786,7 @@ export function useChessGame() {
     undoMove,
     requestHint,
     revealHintMove,
+    clearHint,
     newGame,
     setPlayerColor: handleSetPlayerColor,
     setCurrentLevel,
