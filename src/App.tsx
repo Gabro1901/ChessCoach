@@ -223,12 +223,6 @@ export const App: React.FC = () => {
                       {currentLevel.elo} ELO
                     </span>
                   </div>
-                  {isEngineThinking && (
-                    <span className="text-[10px] text-amber-400 flex items-center gap-1 animate-pulse leading-none mt-0.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                      <span className="truncate">calcolo...</span>
-                    </span>
-                  )}
                 </div>
               </button>
 
@@ -279,7 +273,7 @@ export const App: React.FC = () => {
             <div className="w-full flex items-center justify-center gap-1.5 sm:gap-2.5 my-auto md:my-1">
               {/* 1. Eval Bar */}
               {showEvalBar && (
-                <div className="w-4 sm:w-5 md:w-7 lg:w-8 h-[min(calc(100vw-36px),calc(100dvh-220px))] md:h-[min(640px,calc(100dvh-165px))] lg:h-[min(720px,calc(100dvh-155px))] xl:h-[min(760px,calc(100dvh-145px))] shrink-0">
+                <div className="w-6 sm:w-6 md:w-7 lg:w-8 h-[min(calc(100vw-42px),calc(100dvh-220px))] md:h-[min(640px,calc(100dvh-165px))] lg:h-[min(720px,calc(100dvh-155px))] xl:h-[min(760px,calc(100dvh-145px))] shrink-0">
                   <EvalBar
                     score={positionAnalysis ? positionAnalysis.score : 0}
                     mate={positionAnalysis ? positionAnalysis.mate : null}
@@ -290,7 +284,7 @@ export const App: React.FC = () => {
               )}
 
               {/* 2. Chessboard (Exact width and height) */}
-              <div className="w-[min(calc(100vw-36px),calc(100dvh-220px))] md:w-[min(640px,calc(100dvh-165px))] lg:w-[min(720px,calc(100dvh-155px))] xl:w-[min(760px,calc(100dvh-145px))] aspect-square shrink-0">
+              <div className="w-[min(calc(100vw-42px),calc(100dvh-220px))] md:w-[min(640px,calc(100dvh-165px))] lg:w-[min(720px,calc(100dvh-155px))] xl:w-[min(760px,calc(100dvh-145px))] aspect-square shrink-0">
                 <ChessBoard
                   game={displayGame}
                   orientation={orientation}

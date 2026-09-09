@@ -18,7 +18,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   gameStatus,
   playerColor,
-  isEngineThinking,
   onNewGame,
   onOpenInfo,
   soundEnabled,
@@ -57,16 +56,6 @@ export const Header: React.FC<HeaderProps> = ({
       );
     }
 
-    if (isEngineThinking) {
-      return (
-        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-          <span>Istruttore al calcolo...</span>
-        </span>
-      );
-    }
-
-    // "Tocca a te" badge removed per user request on both desktop and mobile
     return null;
   };
 

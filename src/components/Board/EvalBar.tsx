@@ -40,13 +40,13 @@ export const EvalBar: React.FC<EvalBarProps> = ({
     <div className="relative flex flex-col items-center w-full h-full rounded-lg overflow-hidden bg-[#1e293b] border border-slate-700/80 shadow-md select-none">
       {/* Top section (Black if orientation White, White if orientation Black) */}
       <div
-        className="w-full bg-[#181e29] transition-all duration-500 ease-out flex items-start justify-center pt-1 overflow-hidden"
+        className="w-full bg-[#181e29] transition-all duration-500 ease-out flex items-start justify-center pt-1 px-0.5 overflow-hidden"
         style={{ height: `${topPercent}%` }}
       >
         {topPercent > 16 && (
           <span
-            className={`font-sans font-black tabular-nums tracking-tighter text-slate-300 leading-none px-0.5 whitespace-nowrap overflow-hidden text-center max-w-full ${
-              label.length >= 5 ? 'text-[9px] md:text-[10px]' : 'text-[10px] sm:text-[11px] md:text-xs'
+            className={`font-sans font-bold tabular-nums tracking-tighter text-slate-300 leading-none whitespace-nowrap text-center block w-full select-none ${
+              label.length >= 5 ? 'text-[8px] sm:text-[9px] md:text-[10px]' : 'text-[9px] sm:text-[10px] md:text-xs'
             }`}
           >
             {orientation === 'w' ? (score < 0 || (mate && mate < 0) ? label : '') : (score > 0 || (mate && mate > 0) ? label : '')}
@@ -56,13 +56,13 @@ export const EvalBar: React.FC<EvalBarProps> = ({
 
       {/* Bottom section */}
       <div
-        className="w-full bg-[#f8fafc] transition-all duration-500 ease-out flex items-end justify-center pb-1 overflow-hidden"
+        className="w-full bg-[#f8fafc] transition-all duration-500 ease-out flex items-end justify-center pb-1 px-0.5 overflow-hidden"
         style={{ height: `${100 - topPercent}%` }}
       >
         {100 - topPercent > 16 && (
           <span
-            className={`font-sans font-black tabular-nums tracking-tighter text-slate-900 leading-none px-0.5 whitespace-nowrap overflow-hidden text-center max-w-full ${
-              label.length >= 5 ? 'text-[9px] md:text-[10px]' : 'text-[10px] sm:text-[11px] md:text-xs'
+            className={`font-sans font-bold tabular-nums tracking-tighter text-slate-900 leading-none whitespace-nowrap text-center block w-full select-none ${
+              label.length >= 5 ? 'text-[8px] sm:text-[9px] md:text-[10px]' : 'text-[9px] sm:text-[10px] md:text-xs'
             }`}
           >
             {orientation === 'w' ? (score >= 0 && (!mate || mate >= 0) ? label : '') : (score <= 0 && (!mate || mate <= 0) ? label : '')}
