@@ -85,7 +85,7 @@ export const MoveHistory: React.FC<MoveHistoryProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2.5 bg-[#222b3c] border-b border-slate-700">
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-          Mosse (PGN)
+          Storico Mosse
         </h4>
         <div className="flex items-center gap-1.5">
           {onCopyPgn && (

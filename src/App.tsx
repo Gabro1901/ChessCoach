@@ -193,14 +193,93 @@ export const App: React.FC = () => {
       {/* MAIN CONTAINER */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-1.5 py-1 sm:p-3 lg:p-4 flex flex-col md:flex-row gap-2.5 lg:gap-6 justify-center items-center h-[calc(100dvh-50px)] overflow-hidden">
         {/* ================= LEFT / CENTER: CHESS ARENA ================= */}
-        <div className="flex items-center justify-center h-full min-h-0 shrink-0">
+        <div className="flex items-center justify-center h-full min-h-0 w-full md:w-auto shrink-0">
           
-          {/* Main Chessboard Unit: Row with EvalBar and Board Column */}
-          <div className="flex items-start justify-center gap-1 sm:gap-2.5">
-            {/* 1. Eval Bar (Aligns vertically with the Chessboard) */}
-            {showEvalBar && (
-              <div className="flex flex-col items-center pt-[38px] shrink-0">
-                <div className="w-3.5 sm:w-5 md:w-6 h-[min(calc(100vw-28px),calc(100dvh-170px))] md:h-[min(640px,calc(100dvh-180px))] lg:h-[min(720px,calc(100dvh-170px))]">
+          {/* Main Arena Unit: Full width on mobile, calibrated on desktop */}
+          <div className={`flex flex-col items-center w-full max-w-md sm:max-w-lg md:max-w-none ${
+            showEvalBar
+              ? "md:w-[calc(min(620px,calc(100dvh-180px))+34px)] lg:w-[calc(min(700px,calc(100dvh-170px))+34px)]"
+              : "md:w-[min(620px,calc(100dvh-180px))] lg:w-[min(700px,calc(100dvh-170px))]"
+          }`}>
+            
+            {/* Top Info Bar: Opponent Info & Captured Pieces */}
+            <div className="w-full flex items-center justify-between px-2.5 py-1 bg-[#181e29]/90 border border-slate-800 rounded-xl mb-1 shadow-sm shrink-0 h-[34px]">
+              <button
+                onClick={() => {
+                  if (window.innerWidth < 768) {
+                    setMobileModal('settings');
+                  } else {
+                    setDesktopTab('settings');
+                  }
+                }}
+                className="flex items-center gap-2 min-w-0 text-left hover:opacity-85 transition-opacity cursor-pointer group"
+                title="Clicca per scegliere o personalizzare il livello dell'avversario"
+              >
+                <span className="text-lg sm:text-xl select-none shrink-0 group-hover:scale-105 transition-transform">{currentLevel.avatar}</span>
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-white leading-none truncate group-hover:text-emerald-400 transition-colors">{currentLevel.name}</span>
+                    <span className="text-[10px] font-mono text-emerald-400 font-semibold leading-none shrink-0">
+                      {currentLevel.elo} ELO
+                    </span>
+                  </div>
+                  {isEngineThinking && (
+                    <span className="text-[10px] text-amber-400 flex items-center gap-1 animate-pulse leading-none mt-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                      <span className="truncate">calcolo...</span>
+                    </span>
+                  )}
+                </div>
+              </button>
+
+              {/* Opponent captured pieces */}
+              <div className="shrink-0">
+                <CapturedPieces game={displayGame} forColor={playerColor === 'w' ? 'b' : 'w'} />
+              </div>
+            </div>
+
+            {/* Branch Notification Banner (if newly created) */}
+            {branchNotification && (
+              <div className="w-full flex items-center justify-between px-2.5 py-1 bg-emerald-950/90 border border-emerald-500/50 rounded-xl text-emerald-200 text-[11px] font-semibold shadow-sm mb-1 shrink-0 animate-fade-in">
+                <span className="flex items-center gap-1.5 truncate">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span className="truncate">{branchNotification}</span>
+                </span>
+                <button
+                  onClick={() => setBranchNotification(null)}
+                  className="text-emerald-400 hover:text-white text-xs font-bold px-1"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            {/* Historical Replay Banner (if open) */}
+            {isViewingHistory && (
+              <div className="w-full flex items-center justify-between px-2.5 py-1 bg-amber-950/85 border border-amber-500/50 rounded-xl text-amber-200 text-[11px] font-medium shadow-sm mb-1 shrink-0">
+                <span className="flex items-center gap-1.5 font-sans truncate mr-1">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0" />
+                  <span className="truncate">
+                    {selectedMoveIndex === -2
+                      ? 'Inizio Partita • Fai una mossa per branchare'
+                      : `Mossa ${selectedMoveIndex + 1}/${history.length}: ${history[selectedMoveIndex]} • Fai una mossa per branchare`}
+                  </span>
+                </span>
+                <button
+                  onClick={() => setSelectedMoveIndex(-1)}
+                  className="px-2 py-0.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 hover:text-white border border-amber-500/40 text-[10px] font-bold transition-all flex items-center gap-1 shrink-0"
+                >
+                  <span>Diretta</span>
+                  <ChevronLast className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+
+            {/* Board Row: EvalBar + Chessboard (Pixel-locked together with zero overlap) */}
+            <div className="w-full flex items-center justify-center gap-1.5 sm:gap-2.5">
+              {/* 1. Eval Bar */}
+              {showEvalBar && (
+                <div className="w-3.5 sm:w-5 md:w-6 h-[min(calc(100vw-36px),calc(100dvh-185px))] md:h-[min(620px,calc(100dvh-180px))] lg:h-[min(700px,calc(100dvh-170px))] shrink-0">
                   <EvalBar
                     score={positionAnalysis ? positionAnalysis.score : 0}
                     mate={positionAnalysis ? positionAnalysis.mate : null}
@@ -208,87 +287,10 @@ export const App: React.FC = () => {
                     winChanceWhite={positionAnalysis ? positionAnalysis.winChanceWhite : 50}
                   />
                 </div>
-              </div>
-            )}
-
-            {/* 2. Board Column (Opponent Bar + Historical Banner + Board + Player Bar + Mobile Actions) */}
-            <div className="flex flex-col items-center w-[min(calc(100vw-28px),calc(100dvh-170px))] md:w-[min(640px,calc(100dvh-180px))] lg:w-[min(720px,calc(100dvh-170px))] shrink-0">
-              
-              {/* Top Info Bar: Opponent Info & Captured Pieces (100% width match with board) */}
-              <div className="w-full flex items-center justify-between px-2.5 py-1 bg-[#181e29]/90 border border-slate-800 rounded-xl mb-1 shadow-sm shrink-0 h-[34px]">
-                <button
-                  onClick={() => {
-                    if (window.innerWidth < 768) {
-                      setMobileModal('settings');
-                    } else {
-                      setDesktopTab('settings');
-                    }
-                  }}
-                  className="flex items-center gap-2 min-w-0 text-left hover:opacity-85 transition-opacity cursor-pointer group"
-                  title="Clicca per scegliere o personalizzare il livello dell'avversario"
-                >
-                  <span className="text-lg sm:text-xl select-none shrink-0 group-hover:scale-105 transition-transform">{currentLevel.avatar}</span>
-                  <div className="flex flex-col min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold text-white leading-none truncate group-hover:text-emerald-400 transition-colors">{currentLevel.name}</span>
-                      <span className="text-[10px] font-mono text-emerald-400 font-semibold leading-none shrink-0">
-                        {currentLevel.elo} ELO
-                      </span>
-                    </div>
-                    {isEngineThinking && (
-                      <span className="text-[10px] text-amber-400 flex items-center gap-1 animate-pulse leading-none mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                        <span className="truncate">calcolo...</span>
-                      </span>
-                    )}
-                  </div>
-                </button>
-
-                {/* Opponent captured pieces */}
-                <div className="shrink-0">
-                  <CapturedPieces game={displayGame} forColor={playerColor === 'w' ? 'b' : 'w'} />
-                </div>
-              </div>
-
-              {/* Branch Notification Banner (if newly created) */}
-              {branchNotification && (
-                <div className="w-full flex items-center justify-between px-2.5 py-1 bg-emerald-950/90 border border-emerald-500/50 rounded-xl text-emerald-200 text-[11px] font-semibold shadow-sm mb-1 shrink-0 animate-fade-in">
-                  <span className="flex items-center gap-1.5 truncate">
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span className="truncate">{branchNotification}</span>
-                  </span>
-                  <button
-                    onClick={() => setBranchNotification(null)}
-                    className="text-emerald-400 hover:text-white text-xs font-bold px-1"
-                  >
-                    ×
-                  </button>
-                </div>
               )}
 
-              {/* Historical Replay Banner (if open) */}
-              {isViewingHistory && (
-                <div className="w-full flex items-center justify-between px-2.5 py-1 bg-amber-950/85 border border-amber-500/50 rounded-xl text-amber-200 text-[11px] font-medium shadow-sm mb-1 shrink-0">
-                  <span className="flex items-center gap-1.5 font-sans truncate mr-1">
-                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0" />
-                    <span className="truncate">
-                      {selectedMoveIndex === -2
-                        ? 'Inizio Partita • Fai una mossa per branchare'
-                        : `Mossa ${selectedMoveIndex + 1}/${history.length}: ${history[selectedMoveIndex]} • Fai una mossa per branchare`}
-                    </span>
-                  </span>
-                  <button
-                    onClick={() => setSelectedMoveIndex(-1)}
-                    className="px-2 py-0.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 hover:text-white border border-amber-500/40 text-[10px] font-bold transition-all flex items-center gap-1 shrink-0"
-                  >
-                    <span>Diretta</span>
-                    <ChevronLast className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-
-              {/* Chessboard (Exact width and height) */}
-              <div className="w-full h-[min(calc(100vw-28px),calc(100dvh-170px))] md:h-[min(640px,calc(100dvh-180px))] lg:h-[min(720px,calc(100dvh-170px))] aspect-square shrink-0">
+              {/* 2. Chessboard (Exact width and height) */}
+              <div className="w-[min(calc(100vw-36px),calc(100dvh-185px))] md:w-[min(620px,calc(100dvh-180px))] lg:w-[min(700px,calc(100dvh-170px))] aspect-square shrink-0">
                 <ChessBoard
                   game={displayGame}
                   orientation={orientation}
@@ -303,109 +305,109 @@ export const App: React.FC = () => {
                   theme={theme}
                 />
               </div>
-
-              {/* Bottom Info Bar: Player Info & Captured Pieces (100% width match with board) */}
-              <div className="w-full flex items-center justify-between px-2.5 py-1 bg-[#181e29]/90 border border-slate-800 rounded-xl mt-1 shadow-sm shrink-0 h-[34px]">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-700 flex items-center justify-center text-[10px] sm:text-xs font-bold text-white border border-slate-600 shrink-0">
-                    {playerColor === 'w' ? '♔' : '♚'}
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-bold text-white leading-none truncate">Tu ({playerColor === 'w' ? 'Bianco' : 'Nero'})</span>
-                    <span className="text-[10px] text-slate-400 leading-none mt-0.5 truncate">
-                      {isViewingHistory ? 'Replay / Branching' : isPlayerTurn ? 'Tocca a te' : 'In attesa'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1.5 shrink-0">
-                  {/* Player captured pieces */}
-                  <CapturedPieces game={displayGame} forColor={playerColor} />
-
-                  {/* Quick Desktop Quick Actions */}
-                  <div className="hidden sm:flex items-center gap-1">
-                    <button
-                      onClick={() => setIsSavedModalOpen(true)}
-                      className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold transition-colors border border-slate-700/60"
-                      title="Partite Salvate & Revisione"
-                    >
-                      <FolderOpen className="w-3 h-3 text-amber-400" />
-                      <span>Partite</span>
-                    </button>
-
-                    <button
-                      onClick={handleUndoMove}
-                      disabled={history.length === 0}
-                      className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold disabled:opacity-40 transition-colors border border-slate-700/60"
-                      title="Annulla mossa (Ctrl+Z)"
-                    >
-                      <Undo2 className="w-3 h-3 text-amber-400" />
-                      <span>Annulla</span>
-                    </button>
-
-                    <button
-                      onClick={flipBoard}
-                      className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                      title="Capovolgi scacchiera"
-                    >
-                      <RotateCcw className="w-3 h-3" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile Action Buttons Bar */}
-              <div className="md:hidden w-full grid grid-cols-5 gap-1.5 pt-1.5 pb-0.5 shrink-0">
-                {/* 1. Undo Button */}
-                <button
-                  onClick={handleUndoMove}
-                  disabled={history.length === 0}
-                  className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-slate-800/90 active:bg-slate-700 disabled:opacity-30 border border-slate-700/70 transition-all text-slate-200"
-                >
-                  <Undo2 className="w-3.5 h-3.5 text-amber-400 mb-0.5" />
-                  <span className="text-[10px] font-bold">Annulla</span>
-                </button>
-
-                {/* 2. Hint Button */}
-                <button
-                  onClick={handleMobileHintClick}
-                  disabled={!isPlayerTurn || isEngineThinking || isViewingHistory}
-                  className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-emerald-950/40 active:bg-emerald-900/60 border border-emerald-500/40 text-emerald-300 disabled:opacity-30 transition-all font-bold"
-                >
-                  <Lightbulb className="w-3.5 h-3.5 text-emerald-400 mb-0.5" />
-                  <span className="text-[10px]">Consiglio</span>
-                </button>
-
-                {/* 3. Review Last Move */}
-                <button
-                  onClick={() => setMobileModal('review')}
-                  disabled={!lastMoveEval}
-                  className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-slate-800/90 active:bg-slate-700 disabled:opacity-30 border border-slate-700/70 transition-all text-slate-200"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-purple-400 mb-0.5" />
-                  <span className="text-[10px] font-bold">Analisi</span>
-                </button>
-
-                {/* 4. Move History PGN */}
-                <button
-                  onClick={() => setMobileModal('moves')}
-                  className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-slate-800/90 active:bg-slate-700 border border-slate-700/70 transition-all text-slate-200"
-                >
-                  <ScrollText className="w-3.5 h-3.5 text-blue-400 mb-0.5" />
-                  <span className="text-[10px] font-bold">Mosse</span>
-                </button>
-
-                {/* 5. Settings */}
-                <button
-                  onClick={() => setMobileModal('settings')}
-                  className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-slate-800/90 active:bg-slate-700 border border-slate-700/70 transition-all text-slate-200"
-                >
-                  <SlidersHorizontal className="w-3.5 h-3.5 text-slate-300 mb-0.5" />
-                  <span className="text-[10px] font-bold">Opzioni</span>
-                </button>
-              </div>
-
             </div>
+
+            {/* Bottom Info Bar: Player Info & Captured Pieces */}
+            <div className="w-full flex items-center justify-between px-2.5 py-1 bg-[#181e29]/90 border border-slate-800 rounded-xl mt-1 shadow-sm shrink-0 h-[34px]">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-700 flex items-center justify-center text-[10px] sm:text-xs font-bold text-white border border-slate-600 shrink-0">
+                  {playerColor === 'w' ? '♔' : '♚'}
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-xs font-bold text-white leading-none truncate">Tu ({playerColor === 'w' ? 'Bianco' : 'Nero'})</span>
+                  <span className="text-[10px] text-slate-400 leading-none mt-0.5 truncate">
+                    {isViewingHistory ? 'Replay / Branching' : isPlayerTurn ? 'Tocca a te' : 'In attesa'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 shrink-0">
+                {/* Player captured pieces */}
+                <CapturedPieces game={displayGame} forColor={playerColor} />
+
+                {/* Quick Desktop Quick Actions */}
+                <div className="hidden sm:flex items-center gap-1">
+                  <button
+                    onClick={() => setIsSavedModalOpen(true)}
+                    className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold transition-colors border border-slate-700/60"
+                    title="Partite Salvate & Revisione"
+                  >
+                    <FolderOpen className="w-3 h-3 text-amber-400" />
+                    <span>Partite</span>
+                  </button>
+
+                  <button
+                    onClick={handleUndoMove}
+                    disabled={history.length === 0}
+                    className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold disabled:opacity-40 transition-colors border border-slate-700/60"
+                    title="Annulla mossa (Ctrl+Z)"
+                  >
+                    <Undo2 className="w-3 h-3 text-amber-400" />
+                    <span>Annulla</span>
+                  </button>
+
+                  <button
+                    onClick={flipBoard}
+                    className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                    title="Capovolgi scacchiera"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Action Buttons Bar (Spans 100% of mobile screen width) */}
+            <div className="md:hidden w-full grid grid-cols-5 gap-1.5 pt-1.5 pb-0.5 shrink-0">
+              {/* 1. Undo Button */}
+              <button
+                onClick={handleUndoMove}
+                disabled={history.length === 0}
+                className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-slate-800/90 active:bg-slate-700 disabled:opacity-30 border border-slate-700/70 transition-all text-slate-200"
+              >
+                <Undo2 className="w-3.5 h-3.5 text-amber-400 mb-0.5" />
+                <span className="text-[10px] font-bold">Annulla</span>
+              </button>
+
+              {/* 2. Hint Button */}
+              <button
+                onClick={handleMobileHintClick}
+                disabled={!isPlayerTurn || isEngineThinking || isViewingHistory}
+                className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-emerald-950/40 active:bg-emerald-900/60 border border-emerald-500/40 text-emerald-300 disabled:opacity-30 transition-all font-bold"
+              >
+                <Lightbulb className="w-3.5 h-3.5 text-emerald-400 mb-0.5" />
+                <span className="text-[10px]">Consiglio</span>
+              </button>
+
+              {/* 3. Review Last Move */}
+              <button
+                onClick={() => setMobileModal('review')}
+                disabled={!lastMoveEval}
+                className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-slate-800/90 active:bg-slate-700 disabled:opacity-30 border border-slate-700/70 transition-all text-slate-200"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-purple-400 mb-0.5" />
+                <span className="text-[10px] font-bold">Analisi</span>
+              </button>
+
+              {/* 4. Move History */}
+              <button
+                onClick={() => setMobileModal('moves')}
+                className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-slate-800/90 active:bg-slate-700 border border-slate-700/70 transition-all text-slate-200"
+              >
+                <ScrollText className="w-3.5 h-3.5 text-blue-400 mb-0.5" />
+                <span className="text-[10px] font-bold">Mosse</span>
+              </button>
+
+              {/* 5. Settings */}
+              <button
+                onClick={() => setMobileModal('settings')}
+                className="flex flex-col items-center justify-center py-1.5 rounded-xl bg-slate-800/90 active:bg-slate-700 border border-slate-700/70 transition-all text-slate-200"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5 text-slate-300 mb-0.5" />
+                <span className="text-[10px] font-bold">Opzioni</span>
+              </button>
+            </div>
+
           </div>
         </div>
 
@@ -434,7 +436,7 @@ export const App: React.FC = () => {
               }`}
             >
               <ScrollText className="w-4 h-4" />
-              <span>Mosse (PGN)</span>
+              <span>Mosse</span>
             </button>
 
             <button

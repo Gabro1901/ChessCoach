@@ -14,6 +14,7 @@ import {
   Zap,
   Check,
   Cpu,
+  Smartphone,
 } from 'lucide-react';
 import { EngineLevel, PlayerColor } from '../../types/chess';
 import {
@@ -452,6 +453,34 @@ export const GameSettings: React.FC<GameSettingsProps> = ({
               <span>Frecce</span>
             </button>
           )}
+        </div>
+      </div>
+
+      {/* PWA / iOS Install Card */}
+      <div className="p-3 bg-gradient-to-br from-[#131c2a] to-[#0d131d] border border-emerald-500/30 rounded-2xl shadow-sm">
+        <div className="flex items-start gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+            <Smartphone className="w-4 h-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h5 className="text-xs font-bold text-white">Installa come App (iOS & Android)</h5>
+              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">PWA</span>
+            </div>
+            <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+              Salva l'app sulla tua schermata Home per aprirla a tutto schermo come un'app nativa:
+            </p>
+            <div className="mt-2 text-[10px] text-slate-400 space-y-1.5 bg-slate-900/60 p-2 rounded-xl border border-slate-800">
+              <div className="flex flex-col gap-0.5 text-slate-300">
+                <span className="font-bold text-emerald-400">Su iPhone / iPad (Safari):</span>
+                <span>Tocca il tasto <strong>Condividi</strong> ⎋ e scegli <strong>"Aggiungi alla schermata Home"</strong>.</span>
+              </div>
+              <div className="flex flex-col gap-0.5 text-slate-300">
+                <span className="font-bold text-emerald-400">Su Android / PC (Chrome, Edge):</span>
+                <span>Tocca i tre puntini del menu o l'icona <strong>Installa app</strong> nella barra di navigazione.</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

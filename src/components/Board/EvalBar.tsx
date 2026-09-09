@@ -37,14 +37,14 @@ export const EvalBar: React.FC<EvalBarProps> = ({
   const topPercent = orientation === 'w' ? 100 - whitePercent : whitePercent;
 
   return (
-    <div className="relative flex flex-col items-center w-7 md:w-8 h-full rounded-lg overflow-hidden bg-[#1e293b] border border-slate-700/80 shadow-md select-none">
+    <div className="relative flex flex-col items-center w-full h-full rounded-lg overflow-hidden bg-[#1e293b] border border-slate-700/80 shadow-md select-none">
       {/* Top section (Black if orientation White, White if orientation Black) */}
       <div
         className="w-full bg-[#181e29] transition-all duration-500 ease-out flex items-start justify-center pt-1"
         style={{ height: `${topPercent}%` }}
       >
         {topPercent > 18 && (
-          <span className="text-[10px] md:text-xs font-mono font-bold text-slate-300">
+          <span className="text-[9px] sm:text-[10px] md:text-xs font-mono font-bold text-slate-300 leading-none">
             {orientation === 'w' ? (score < 0 || (mate && mate < 0) ? label : '') : (score > 0 || (mate && mate > 0) ? label : '')}
           </span>
         )}
@@ -56,7 +56,7 @@ export const EvalBar: React.FC<EvalBarProps> = ({
         style={{ height: `${100 - topPercent}%` }}
       >
         {100 - topPercent > 18 && (
-          <span className="text-[10px] md:text-xs font-mono font-bold text-slate-800">
+          <span className="text-[9px] sm:text-[10px] md:text-xs font-mono font-bold text-slate-800 leading-none">
             {orientation === 'w' ? (score >= 0 && (!mate || mate >= 0) ? label : '') : (score <= 0 && (!mate || mate <= 0) ? label : '')}
           </span>
         )}
