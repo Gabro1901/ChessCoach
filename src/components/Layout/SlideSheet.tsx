@@ -33,7 +33,7 @@ export const SlideSheet: React.FC<SlideSheetProps> = ({
       {/* Backdrop tap to close */}
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="relative z-10 bg-[#161c28] border-t sm:border border-slate-700/80 rounded-t-3xl sm:rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up">
+      <div className="relative z-10 bg-[#161c28] border-t sm:border border-slate-700/80 rounded-t-3xl sm:rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] sm:pb-0">
         {/* Modal Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-[#1c2433]">
           <div className="flex items-center gap-2.5">

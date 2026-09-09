@@ -17,7 +17,6 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({
   gameStatus,
-  turn,
   playerColor,
   isEngineThinking,
   onNewGame,
@@ -27,8 +26,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSaved,
   onOpenImport,
 }) => {
-  const isPlayerTurn = turn === playerColor && !gameStatus.isOver;
-
   const getStatusBadge = () => {
     if (gameStatus.isOver) {
       if (gameStatus.winner === 'draw') {
@@ -69,21 +66,12 @@ export const Header: React.FC<HeaderProps> = ({
       );
     }
 
-    return (
-      <span
-        className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${
-          isPlayerTurn
-            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-            : 'bg-slate-800 text-slate-400 border-slate-700'
-        }`}
-      >
-        {isPlayerTurn ? 'Tocca a te' : 'Tocca all\'avversario'}
-      </span>
-    );
+    // "Tocca a te" badge removed per user request on both desktop and mobile
+    return null;
   };
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-[#0d1117]/90 backdrop-blur-md border-b border-slate-800 px-3 py-1.5 sm:px-4 sm:py-2.5 shrink-0">
+    <header className="sticky top-0 z-30 w-full bg-[#0d1117]/95 backdrop-blur-md border-b border-slate-800 px-3 py-1.5 sm:px-4 sm:py-2.5 shrink-0 pt-[max(0.375rem,env(safe-area-inset-top,0px))]">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand */}
         <div className="flex items-center gap-2.5">

@@ -191,14 +191,14 @@ export const App: React.FC = () => {
       />
 
       {/* MAIN CONTAINER */}
-      <main className="flex-1 max-w-[1560px] w-full mx-auto px-2 sm:px-6 lg:px-8 py-2 md:py-3 flex flex-col md:flex-row gap-4 lg:gap-8 justify-center items-center h-[calc(100dvh-52px)] overflow-hidden">
+      <main className="flex-1 min-h-0 max-w-[1560px] w-full mx-auto px-2 sm:px-6 lg:px-8 py-1 md:py-3 flex flex-col md:flex-row gap-2 md:gap-4 lg:gap-8 justify-between md:justify-center items-center overflow-hidden">
         {/* ================= LEFT / CENTER: CHESS ARENA ================= */}
-        <div className="flex items-center justify-center h-full min-h-0 w-full md:w-auto shrink-0">
+        <div className="flex flex-col justify-between md:justify-center items-center h-full min-h-0 w-full md:w-auto shrink-0">
           
           {/* Main Arena Unit: Full width on mobile, calibrated on desktop */}
-          <div className={`flex flex-col items-center w-full max-w-md sm:max-w-lg md:max-w-none ${
+          <div className={`flex flex-col justify-between md:justify-start h-full md:h-auto w-full max-w-md sm:max-w-lg md:max-w-none ${
             showEvalBar
-              ? "md:w-[calc(min(640px,calc(100dvh-165px))+34px)] lg:w-[calc(min(720px,calc(100dvh-155px))+34px)] xl:w-[calc(min(760px,calc(100dvh-145px))+34px)]"
+              ? "md:w-[calc(min(640px,calc(100dvh-165px))+42px)] lg:w-[calc(min(720px,calc(100dvh-155px))+46px)] xl:w-[calc(min(760px,calc(100dvh-145px))+46px)]"
               : "md:w-[min(640px,calc(100dvh-165px))] lg:w-[min(720px,calc(100dvh-155px))] xl:w-[min(760px,calc(100dvh-145px))]"
           }`}>
             
@@ -276,10 +276,10 @@ export const App: React.FC = () => {
             )}
 
             {/* Board Row: EvalBar + Chessboard (Pixel-locked together with zero overlap) */}
-            <div className="w-full flex items-center justify-center gap-1.5 sm:gap-2.5">
+            <div className="w-full flex items-center justify-center gap-1.5 sm:gap-2.5 my-auto md:my-1">
               {/* 1. Eval Bar */}
               {showEvalBar && (
-                <div className="w-3.5 sm:w-5 md:w-6 h-[min(calc(100vw-36px),calc(100dvh-185px))] md:h-[min(640px,calc(100dvh-165px))] lg:h-[min(720px,calc(100dvh-155px))] xl:h-[min(760px,calc(100dvh-145px))] shrink-0">
+                <div className="w-4 sm:w-5 md:w-7 lg:w-8 h-[min(calc(100vw-36px),calc(100dvh-220px))] md:h-[min(640px,calc(100dvh-165px))] lg:h-[min(720px,calc(100dvh-155px))] xl:h-[min(760px,calc(100dvh-145px))] shrink-0">
                   <EvalBar
                     score={positionAnalysis ? positionAnalysis.score : 0}
                     mate={positionAnalysis ? positionAnalysis.mate : null}
@@ -290,7 +290,7 @@ export const App: React.FC = () => {
               )}
 
               {/* 2. Chessboard (Exact width and height) */}
-              <div className="w-[min(calc(100vw-36px),calc(100dvh-185px))] md:w-[min(640px,calc(100dvh-165px))] lg:w-[min(720px,calc(100dvh-155px))] xl:w-[min(760px,calc(100dvh-145px))] aspect-square shrink-0">
+              <div className="w-[min(calc(100vw-36px),calc(100dvh-220px))] md:w-[min(640px,calc(100dvh-165px))] lg:w-[min(720px,calc(100dvh-155px))] xl:w-[min(760px,calc(100dvh-145px))] aspect-square shrink-0">
                 <ChessBoard
                   game={displayGame}
                   orientation={orientation}
@@ -315,9 +315,15 @@ export const App: React.FC = () => {
                 </div>
                 <div className="flex flex-col min-w-0">
                   <span className="text-xs font-bold text-white leading-none truncate">Tu ({playerColor === 'w' ? 'Bianco' : 'Nero'})</span>
-                  <span className="text-[10px] text-slate-400 leading-none mt-0.5 truncate">
-                    {isViewingHistory ? 'Replay / Branching' : isPlayerTurn ? 'Tocca a te' : 'In attesa'}
-                  </span>
+                  {isViewingHistory ? (
+                    <span className="text-[10px] text-amber-400 leading-none mt-0.5 truncate">
+                      Replay / Branching
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 leading-none mt-0.5 truncate">
+                      {playerColor === 'w' ? 'Giocatore Bianco' : 'Giocatore Nero'}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -348,8 +354,8 @@ export const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Mobile Action Buttons Bar (Spans 100% of mobile screen width) */}
-            <div className="md:hidden w-full grid grid-cols-5 gap-1.5 pt-1.5 pb-0.5 shrink-0">
+            {/* Mobile Action Buttons Bar (Docked at screen bottom with iOS Home Indicator safe area padding) */}
+            <div className="md:hidden w-full grid grid-cols-5 gap-1.5 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom,0px))] shrink-0">
               {/* 1. Undo Button */}
               <button
                 onClick={handleUndoMove}
